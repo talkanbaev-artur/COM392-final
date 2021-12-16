@@ -22,7 +22,7 @@ To simulate the virus the main loop does following:
 
 Currently virus acting in small communities is based on the two-stage system.
 
-The first stage updates each person's stats (disease progress, immunity/vaccine decay, other stats) and collects the virus influence in the community. At this stage all current sources of the disease create their inpact, which would take effect in the next stage. At this stage all virus-positive events and modifiers kick-in.
+The first stage updates each person's stats (disease progress, immunity/vaccine decay, other stats) and collects the virus influence in the community. At this stage all current sources of the disease create their impact, which would take effect in the next stage. At this stage all virus-positive events and modifiers kick-in.
 
 The second stage decomposes the virus influence from the previous stage, take into account all other stats and infects new people. At this stage all virus-negative events and modifiers kick-in.
 
@@ -32,12 +32,76 @@ In case of virus having the `environmental` trait, it would be reinforced by env
 
 ### Individuals
 
-TBF
+###### Basic
+
+1. Health status
+    - Healthy (uninfected, not immune)
+        - Continue to next stage
+    - Infected
+        - Increment infection status
+        - Affect community diseased population
+        - Affect community susceptible population
+    - Immune
+        - Increment immunity status
+        - Affect individual susceptibliity
+    - Dead
+        - Affect individual social group size
+2. Infection status
+    - Uninfected
+    - Infected pre-illness (contagious, no sympotoms)
+        - Duration
+    - Infected mid-illness (contagious, symptoms)
+        - Duration
+    - Infected post-illness (non-contagious, recovering symptoms)
+        - Duration
+3. Immunity status
+    - Vaccination
+        - Quality (affect on susceptibliity)
+        - Duration
+    - Natural immunity (begins post-illness)
+        - Quality (affect on susceptibliity)
+        - Duration
+4. Characteristics (multipliers)
+    - Susceptibility
+    - Vaccine hesitancy
+    - Social group size (average number of random contacts)
+    - Household size (number of daily contacts)
+
+###### Advanced
+
+TODO
 
 ### Virus
 
-TBF
+###### Basic
+
+1. Contagiousness
+    - Quality
+    - Durations (pre-, mid-, and post-illness)
+2. Case Fatality Rate (CFR)
+
+###### Advanced
+
+TODO
 
 ### Community
 
-TBF
+###### Basic
+
+1. Status
+    - Diseased population
+        - Affect community characteristics
+        - Affect virus contagiousness quality
+    - Susceptible population
+        - Affect community characteristics
+        - Affect individual social group size
+        - Affect individual household size
+2. Characteristics (multipliers)
+    - Government lockdown
+        - Affect individual social group size
+    - Mask mandate
+        - Affect individual susceptibility
+
+###### Advanced
+
+TODO
