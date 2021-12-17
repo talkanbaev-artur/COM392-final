@@ -35,29 +35,20 @@ int main(int argc, char *argv[]){
 
   // -- run the system depending on runMode
   switch(PARAMS.runMode){
-      case 0: // get hardware information (& reset GPU)
-				if (PARAMS.verbosity == 1) printf("\n -- probing hardware -- \n");
-				probeHost();
-				probeGPU();
-				break;
-			case 1: // launch picture to test drawing function
-				if (PARAMS.verbosity == 1) printf("\n -- play with pixels --  \n");
-				runEx2(&PARAMS);	// draw picture
-				break;
-			case 2: // virus simulation code
-				if (PARAMS.verbosity == 1) printf("\n -- running virus simulator --\n");
-				runVS(&PARAMS);
-				break;
-			case 3: // Example code to test timing
-				if (PARAMS.verbosity) printf("\n -- testing clock -- \n");
-					clock_gettime(CLOCK_MONOTONIC, &start);
-					for(unsigned long i =0; i < 1000000000; i++){ // burn 1G cycles
-						}
-					clock_gettime(CLOCK_MONOTONIC, &finish);
-					elapsed = (finish.tv_sec - start.tv_sec);	// get the seconds
-					elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0; // sec fraction
-					printf("time used: %.2f\n", elapsed);
-				break;
+	case 0: // virus simulation code
+		if (PARAMS.verbosity == 1) printf("\n -- running virus simulator --\n");
+		runVS(&PARAMS);
+		break;
+	case 3: // Example code to test timing
+		if (PARAMS.verbosity) printf("\n -- testing clock -- \n");
+			clock_gettime(CLOCK_MONOTONIC, &start);
+			for(unsigned long i =0; i < 1000000000; i++){ // burn 1G cycles	
+				clock_gettime(CLOCK_MONOTONIC, &finish);
+				elapsed = (finish.tv_sec - start.tv_sec);	// get the seconds
+				elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0; // sec fraction
+				printf("time used: %.2f\n", elapsed);
+			}
+			break;
       case 4:
 				// etc..
 				break;
