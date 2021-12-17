@@ -123,15 +123,6 @@ __global__ void setMap(float* map, float val, long sizePopulation){
   }
 }
 
-
-
-
-
-
-
-
-
-
 /******************************************************************************/
 // RUNMODE 0 CODE
 /******************************************************************************/
@@ -196,11 +187,6 @@ int probeGPU(){
 return 0;
 }
 
-
-
-
-
-
 /******************************************************************************/
 // RUNMODE 1 CODE
 /******************************************************************************/
@@ -254,8 +240,6 @@ __global__ void initRands(curandState* state, unsigned long seed, unsigned long 
 
 }
 
-
-
 /******************************************************************************/
 __global__ void updateBlues(float* blue){
 
@@ -275,7 +259,6 @@ __global__ void updateBlues(float* blue){
   blue[tid] = acc;
 
 }
-
 
 /******************************************************************************/
 GPU_Palette initGPUPalette(unsigned int imageWidth, unsigned int imageHeight)
@@ -328,8 +311,6 @@ GPU_Palette initGPUPalette(unsigned int imageWidth, unsigned int imageHeight)
   return X;
 }
 
-
-
 /******************************************************************************/
 int freeGPUPalette(GPU_Palette* P) {
 
@@ -343,5 +324,3 @@ int freeGPUPalette(GPU_Palette* P) {
 
   return 0;
 }
-
-/*************************************************************************/

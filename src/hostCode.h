@@ -1,4 +1,3 @@
-
 #include "params.h"
 
 int probeHost();

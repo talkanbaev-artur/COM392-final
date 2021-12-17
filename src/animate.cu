@@ -78,7 +78,6 @@ void CPUAnimBitmap::drawPalette(int width, int height) { // 32, SIZE/32
   glutPostRedisplay();
 }
 
-
 /******************************************************************************/
 CPUAnimBitmap::CPUAnimBitmap(int w, int h, GPU_Palette* d) {//void* d) {
   width = w;
@@ -159,5 +158,3 @@ __device__ unsigned char value(float n1, float n2, int hue) {
     return (unsigned char) (255 * (n1 + (n2 - n1) * (240 - hue) / 60));
   return (unsigned char) (255 * n1);
 }
-
-/******************************************************************************/

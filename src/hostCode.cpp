@@ -159,6 +159,3 @@ int runVS(AParams* PARAMS){
   // return number of people who died after ten years
 
 }
-
-
-/******************************************************************************/

@@ -42,10 +42,6 @@ int updatePopulation(GPU_Palette* P, AParams* PARAMS, int day);
 // kernel calls:
 __global__ void setMap(float* map, float val, long sizePopulation);
 
-
-
-
-
 // -------- runmode 1 stuff for playing with pixel colors
 GPU_Palette initGPUPalette(unsigned int height, unsigned int width);
 int probeGPU(void);
