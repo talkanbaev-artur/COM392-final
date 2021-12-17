@@ -31,9 +31,13 @@ int runVS(AParams* PARAMS){
 
   GPU_Palette P1 = initPopulation();
 
+  printf("1\n");
+
   CPUAnimBitmap animation(PARAMS->width, PARAMS->height, &P1);
   cudaMalloc((void**) &animation.dev_bitmap, animation.image_size());
   animation.initAnimation();
+
+    printf("1\n");
 
   // initialize population with susceptibility and virus stage,
   // let's just do it on the CPU and copy to GPU:
@@ -63,5 +67,6 @@ int runVS(AParams* PARAMS){
      // return number of newly infected and deaths per day
    	}
 
+  freeGPUPalette(&P1);
   // return number of people who died after ten years
 }

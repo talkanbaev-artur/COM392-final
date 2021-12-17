@@ -183,3 +183,68 @@ __global__ void updateBlues(float* blue){
   blue[tid] = acc;
 
 }
+
+/******************************************************************************/
+GPU_Palette initGPUPalette(unsigned int imageWidth, unsigned int imageHeight)
+{
+  GPU_Palette X;
+
+  X.gThreads.x = 32;  // 32 x 32 = 1024 threads per block
+  X.gThreads.y = 32;
+  X.gThreads.z = 1;
+  X.gBlocks.x = ceil(imageWidth/32);  // however many blocks needed for image
+  X.gBlocks.y = ceil(imageHeight/32);
+  X.gBlocks.z = 1;
+
+  X.palette_width = imageWidth;       // save this info
+  X.palette_height = imageHeight;
+  X.num_pixels = imageWidth * imageHeight;
+  X.memSize =  imageWidth * imageHeight * sizeof(float);
+
+  // allocate memory on GPU
+  cudaError_t err;
+  err = cudaMalloc((void**) &X.red, X.memSize);
+  if(err != cudaSuccess){
+    printf("cuda error allocating red = %s\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+    }
+  err = cudaMalloc((void**) &X.green, X.memSize);
+  if(err != cudaSuccess){
+    printf("cuda error allocating green = %s\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+    }
+  err = cudaMalloc((void**) &X.blue, X.memSize);  // b
+  if(err != cudaSuccess){
+    printf("cuda error allocating blue = %s\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+    }
+
+  err = cudaMalloc((void**) &X.rand, X.num_pixels * sizeof(curandState));
+  if(err != cudaSuccess){
+    printf("cuda error allocating blue = %s\n", cudaGetErrorString(err));
+    exit(EXIT_FAILURE);
+    }
+
+  initRands <<< X.gBlocks, X.gThreads >>> (X.rand, time(NULL), X.num_pixels);
+
+  cudaChannelFormatDesc desc= cudaCreateChannelDesc <float>();
+  unsigned int pitch = sizeof(float)*imageWidth;
+  cudaBindTexture2D(NULL, texBlue, X.blue, desc, imageWidth, imageHeight, pitch);
+
+
+  return X;
+}
+
+/******************************************************************************/
+int freeGPUPalette(GPU_Palette* P) {
+
+  // free gpu memory
+//  cudaFree(P->gray);
+  cudaFree(P->red);
+  cudaFree(P->green);
+  cudaFree(P->blue);
+
+  cudaUnbindTexture(texBlue);
+
+  return 0;
+}

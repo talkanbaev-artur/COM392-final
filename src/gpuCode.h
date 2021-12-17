@@ -42,6 +42,8 @@ int updatePopulation(GPU_Palette* P, AParams* PARAMS, int day);
 // kernel calls:
 __global__ void setMap(float* map, float val, long sizePopulation);
 
+int freeGPUPalette(GPU_Palette* P1);
+
 // kernel calls:
 __global__ void updateReds(float* red, curandState* gRand);
 __global__ void updateGreens(float* green);
