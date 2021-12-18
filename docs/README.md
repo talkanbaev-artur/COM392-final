@@ -70,9 +70,12 @@ TODO
 ###### Basic
 
 1. Contagiousness
-	- Quality
-	- Durations (pre-, mid-, and post-illness)
+	- Effective transmission rate - a magic number, which is used as a basic multiplier for infections.
+	- Durations (pre-, mid-, and post-illness) of various periods. This value is random and bounded.
 2. Case Fatality Rate (CFR)
+
+	This value is volatile, meaning that various mutations can occur and change it.
+	Additionally for some communities this value is different, representing the virus variations.
 
 ###### Advanced
 
