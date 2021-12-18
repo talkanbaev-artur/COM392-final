@@ -1,4 +1,9 @@
-#include "params.h"
+#ifndef CPU_CODE_H
+#define CPU_CODE_H
 
-int probeHost();
-int runVS(AParams* PARAMS);
+#include "params.h"
+#include "gpuCode.h"
+
+int runVS(AParams *PARAMS);
+
+#endif
