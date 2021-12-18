@@ -1,10 +1,8 @@
-#ifndef hInterfaceLib
-#define hInterfaceLib
+#ifndef CPU_INTERFACE_H
+#define CPU_INTERFACE_H
 
-#include "params.h"
-#include "gpuCode.h"
+#include "hostCode.h"
 
 int setDefaults(AParams *PARAMS);
-char crack(int argc, char** argv, char* flags, int ignore_unknowns);
 
 #endif
