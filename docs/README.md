@@ -11,11 +11,11 @@ To simulate the virus the main loop does following:
 3. Upload defaults to GPU.
 4. Start the initialisation phase.
 5. Main loop for 10 years (each iteration is a day)
-    1. Init temp memory. Setup daily factors.
-    2. Phase I Virus activity
-    3. Phase II Virus activity
-    4. Update globals.
-    5. Emit statistics (this later will be written in csv file and displayed)
+	1. Init temp memory. Setup daily factors.
+	2. Phase I Virus activity
+	3. Phase II Virus activity
+	4. Update globals.
+	5. Emit statistics (this later will be written in csv file and displayed)
 6. Collect stats and save them.
 
 ## Virus algorithm
@@ -35,37 +35,31 @@ In case of virus having the `environmental` trait, it would be reinforced by env
 ###### Basic
 
 1. Health status
-    - Healthy (uninfected, not immune)
-        - Continue to next stage
-    - Infected
-        - Increment infection status
-        - Affect community diseased population
-        - Affect community susceptible population
-    - Immune
-        - Increment immunity status
-        - Affect individual susceptibliity
-    - Dead
-        - Affect individual social group size
+	- Healthy (uninfected, not immune)
+		- Continue to next stage
+	- Infected (has three statuses)
+		- Decrement infection state
+		- Individuals with this status affect community's susceptible population
+	- Immune/Vaccinated
+		- Decrement immunity state
+		- Virus mutation can cause faster decay of immunity
+	- Dead
 2. Infection status
-    - Uninfected
-    - Infected pre-illness (contagious, no sympotoms)
-        - Duration
-    - Infected mid-illness (contagious, symptoms)
-        - Duration
-    - Infected post-illness (non-contagious, recovering symptoms)
-        - Duration
+	
+	Duration of each period is calculated from virus stats.
+	- Infected pre-illness (maximal contagiousness, no sympotoms, chance of skiping the next stage (symptomless))
+	- Infected mid-illness (lowered contagiousness, symptoms, chance of dying)
+	- Infected post-illness (minimal contagiousness, recovering symptoms, tiny chance of death)
 3. Immunity status
-    - Vaccination
-        - Quality (affect on susceptibliity)
-        - Duration
-    - Natural immunity (begins post-illness)
-        - Quality (affect on susceptibliity)
-        - Duration
+	- Vaccination/Natural immunity
+
+		Immunity decays over time (with the stage itself, as well as the immunity power).
+		If immunity state is critically low, the immunity is considered to be obsolete (virus mutations affects speed of this process).
+		- Quality. Affect on speed of immunity decay
+		- State. Affect on the chance of being infected again
 4. Characteristics (multipliers)
-    - Susceptibility
-    - Vaccine hesitancy
-    - Social group size (average number of random contacts)
-    - Household size (number of daily contacts)
+	- Susceptibility
+	- Vaccine hesitancy
 
 ###### Advanced
 
@@ -76,8 +70,8 @@ TODO
 ###### Basic
 
 1. Contagiousness
-    - Quality
-    - Durations (pre-, mid-, and post-illness)
+	- Quality
+	- Durations (pre-, mid-, and post-illness)
 2. Case Fatality Rate (CFR)
 
 ###### Advanced
@@ -89,18 +83,18 @@ TODO
 ###### Basic
 
 1. Status
-    - Diseased population
-        - Affect community characteristics
-        - Affect virus contagiousness quality
-    - Susceptible population
-        - Affect community characteristics
-        - Affect individual social group size
-        - Affect individual household size
+	- Diseased population
+		- Affect community characteristics
+		- Affect virus contagiousness quality
+	- Susceptible population
+		- Affect community characteristics
+		- Affect individual social group size
+		- Affect individual household size
 2. Characteristics (multipliers)
-    - Government lockdown
-        - Affect individual social group size
-    - Mask mandate
-        - Affect individual susceptibility
+	- Government lockdown
+		- Affect individual social group size
+	- Mask mandate
+		- Affect individual susceptibility
 
 ###### Advanced
 
