@@ -20,13 +20,13 @@ private:
 	//Susceptibility shows individual health characteristics as one value.
 	//Initialised using the flat normal distribution with low mean value.
 	//THIS IS A VERY GENERAL PARAMETR
-	float susceptibility;
+	double susceptibility;
 
 	//Age is self explanatory. Yet to be decided how to generate it logicaly.
 	int age;
 
 	//Vaccination heistancy is used to regulate the rate of vaccination
-	float vaccination_h;
+	double vaccination_h;
 
 	// *** IMMUNITY ***
 
@@ -34,9 +34,9 @@ private:
 	//It is used to people with statuses 4 and 5, when trying to re-infect them.
 	//
 	//With virus mutating, this value will decay to 0. If it decays lower than 0, the status changes to healthy.
-	float immunity;
+	double immunity;
 	//Quality of immunity is used to variate the speed of immunity decay
-	float immunity_q;
+	double immunity_q;
 
 	//later it would nice to have an n-char descriptor for the virus variation
 	//and assign the immunity based on this dna(rna) sample
