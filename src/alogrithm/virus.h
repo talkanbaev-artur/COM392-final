@@ -3,6 +3,7 @@
 
 #include "random.h"
 
+//Virus holds the virus data. Usually this instance would be a singleton, which is updated in cpu each day.
 class Virus
 {
 private:

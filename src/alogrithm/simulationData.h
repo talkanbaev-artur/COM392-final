@@ -5,12 +5,25 @@
 #include "virus.h"
 #include "gpuCode.h"
 
+class DailyRuntimeData
+{
+private:
+	//global V value for the simulation
+	double gV;
+
+public:
+	DailyRuntimeData(/* args */);
+	~DailyRuntimeData();
+};
+
 class SimulationData
 {
 private:
 	ulong populationSize;
 	dim3 threads;
 	dim3 blocks;
+
+	//Following data is allocated on GPU
 
 	Individual *population;
 	curandState *rand;
@@ -23,13 +36,5 @@ public:
 	SimulationData(/* args */);
 	~SimulationData();
 };
-
-SimulationData::SimulationData(/* args */)
-{
-}
-
-SimulationData::~SimulationData()
-{
-}
 
 #endif
