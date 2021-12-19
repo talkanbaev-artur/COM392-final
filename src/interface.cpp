@@ -2,7 +2,7 @@
 #include <yaml-cpp/yaml.h>
 #include <iostream>
 
-#include "interface.h"
+#include "hostCode.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,20 +11,10 @@ int main(int argc, char *argv[])
 	const std::string version = config["version"].as<std::string>();
 	std::cout << "version: " << version << "\n";
 
-	AParams PARAMS;
-	setDefaults(&PARAMS);
+	Params params(1024, 1024);
 
 	printf("\n -- running virus simulator --\n");
 
-	runVS(&PARAMS);
-	return 0;
-}
-
-int setDefaults(AParams *PARAMS)
-{
-	PARAMS->height = 1024;
-	PARAMS->width = 1024;
-	PARAMS->sizePopulation = 1024 * 1024; // = 1,048,576
-
+	runVS(&params);
 	return 0;
 }
