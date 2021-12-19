@@ -159,7 +159,7 @@ void CPUAnimBitmap::initAnimation()
 	glutInit(&c, &dummy);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowSize(width, height);
-	glutCreateWindow("DNF");
+	glutCreateWindow("Virus simulation");
 	// glutKeyboardFunc(Key);
 	glutDisplayFunc(Draw);
 	if (clickDrag != NULL)

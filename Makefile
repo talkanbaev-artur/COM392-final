@@ -11,14 +11,16 @@ YAML_F= n
 # -o flag builder
 OUT = -o $@
 
+.SILENT: dirs clean
+
 all: preps $(BDIR)/interface.o $(BDIR)/gpuCode.o $(BDIR)/animate.o $(BDIR)/hostCode.o
-	$(CC) -o bin/myTemplate bin/interface.o bin/gpuCode.o bin/hostCode.o bin/animate.o $(FLAGS) $(ANIMLIBS) $(YAML_F)
+	$(CDC) -o bin/myTemplate bin/*.o $(ANIMLIBS) $(YAML_F)
 
 $(BDIR)/interface.o: src/interface.cpp src/hostCode.h
-	$(CC) -w -c src/interface.cpp $(FLAGS) $(OUT) 
+	$(CDC) -w -c src/interface.cpp $(OUT) 
 
 $(BDIR)/hostCode.o: src/hostCode.cpp src/hostCode.h src/params.h
-	$(CC) -c -w src/hostCode.cpp $(FLAGS) $(OUT)
+	$(CDC) -c -w src/hostCode.cpp $(OUT)
 
 $(BDIR)/gpuCode.o: src/gpuCode.cu src/gpuCode.h src/params.h
 	$(CDC) -w -c src/gpuCode.cu $(OUT)
