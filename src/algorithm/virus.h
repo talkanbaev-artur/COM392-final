@@ -1,7 +1,8 @@
 #ifndef VIRUS_API_H
 #define VIRUS_API_H
 
-#include "random.h"
+#include "../random.cuh"
+#include "../params.h"
 
 //Virus holds the virus data. Usually this instance would be a singleton, which is updated in cpu each day.
 class Virus
@@ -11,9 +12,9 @@ private:
 	//note: cfr's actuall value is calculated no more than blocks-times a day. This behaviour may change
 	nd_value cfr;
 
-	//Effective transmission rate describes the general rate of virus spread
+	//Natural transmission rate describes the general rate of virus spread
 	//This value represents the general characteristics of virus' ability to transmit to new hosts
-	double etr;
+	double ntr;
 
 	//following 3 generation structs are used to generate the
 	//corresponding value for each infected person
@@ -36,16 +37,9 @@ private:
 	double env_factor;
 
 public:
-	Virus(/* args */);
+	Virus(Params p);
+	Virus();
 	~Virus();
 };
-
-Virus::Virus(/* args */)
-{
-}
-
-Virus::~Virus()
-{
-}
 
 #endif

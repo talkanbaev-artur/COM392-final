@@ -3,7 +3,8 @@
 
 #include "individual.h"
 #include "virus.h"
-#include "gpuCode.h"
+#include "../gpuCode.h"
+#include "community.h"
 
 class DailyRuntimeData
 {
@@ -27,14 +28,17 @@ private:
 
 	Individual *population;
 	curandState *rand;
-	Virus virus;
+	Virus *virus;
+	Community *communities;
 
 	//stores the rgb value for each pixel to display. used only to draw stuff
 	float3 *rgb;
 
 public:
-	SimulationData(/* args */);
+	SimulationData(Params p);
 	~SimulationData();
 };
+
+__global__ void initialiseCuRand(int population, curandState *curand);
 
 #endif
