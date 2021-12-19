@@ -14,6 +14,6 @@ __device__ void update_statuses();
 __device__ void infect();
 
 //main algorithm function. It prepares individuals for each day, and runs both stages
-__global__ void runAlgorithms(SimulationData sd);
+__global__ void runAlgorithms(SimulationData sd, DailyRuntimeData drd);
 
 #endif

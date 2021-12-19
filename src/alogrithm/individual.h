@@ -43,7 +43,7 @@ private:
 
 public:
 	//Public method to get status. Mainly used to display the population map.
-	getStatus();
+	int getStatus(){return status};
 	Individual(/* args */);
 	~Individual();
 };
