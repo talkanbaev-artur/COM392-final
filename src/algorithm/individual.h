@@ -1,6 +1,9 @@
 #ifndef INDIVIDUAL_API_H
 #define INDIVIDUAL_API_H
 
+#include "../params.h"
+#include "../random.cuh"
+
 //Individual is class which stores all stats and state data about
 //a single individual.
 class Individual
@@ -28,6 +31,9 @@ private:
 	//Vaccination heistancy is used to regulate the rate of vaccination
 	double vaccination_h;
 
+	//Is used to determine the avarage number of contacts per day
+	nd_value daily_contacts;
+
 	// *** IMMUNITY ***
 
 	//Immunity is a float value between 0.0 and 1.0, which shows the quality of ones immunity.
@@ -43,17 +49,9 @@ private:
 
 public:
 	//Public method to get status. Mainly used to display the population map.
-	int getStatus(){return status};
-	Individual(/* args */);
+	int getStatus() { return status; }
+	Individual(Params p);
 	~Individual();
 };
-
-Individual::Individual(/* args */)
-{
-}
-
-Individual::~Individual()
-{
-}
 
 #endif

@@ -60,6 +60,7 @@ In case of virus having the `environmental` trait, it would be reinforced by env
 4. Characteristics (multipliers)
 	- Susceptibility
 	- Vaccine hesitancy
+	- Social activity (number of contacts per day)
 
 ###### Advanced
 
@@ -85,19 +86,12 @@ TODO
 
 ###### Basic
 
-1. Status
-	- Diseased population
-		- Affect community characteristics
-		- Affect virus contagiousness quality
-	- Susceptible population
-		- Affect community characteristics
-		- Affect individual social group size
-		- Affect individual household size
-2. Characteristics (multipliers)
+
+1. Characteristics (multipliers)
 	- Government lockdown
-		- Affect individual social group size
-	- Mask mandate
-		- Affect individual susceptibility
+		- Affects on the number of daily contacts in the group
+	- Social distancing factor
+		- Affects the chance of individual being infected 
 
 ###### Advanced
 

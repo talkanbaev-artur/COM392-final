@@ -1,7 +1,6 @@
 #ifndef ALGORITHM_H
 #define ALGORITHM_H
 
-#include "gpuCode.h"
 #include "simulationData.h"
 
 //Main cpu caller function. It calls the pre- and post- alog code, manages stats and launches algo

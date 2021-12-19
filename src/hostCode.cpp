@@ -5,6 +5,7 @@
 
 #include "hostCode.h"
 #include "animate.h"
+#include "algorithm/algorithm.h"
 
 int runVS(Params *params)
 {
