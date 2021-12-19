@@ -38,7 +38,7 @@ struct GPU_Palette
 
 // --------  virus simulation stuff
 GPU_Palette initPopulation(void);
-int updatePopulation(GPU_Palette *P, AParams *PARAMS, int day);
+int updatePopulation(GPU_Palette *P, int day);
 
 // kernel calls:
 __global__ void setMap(float *map, float val, long sizePopulation);

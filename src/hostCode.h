@@ -4,6 +4,6 @@
 #include "params.h"
 #include "gpuCode.h"
 
-int runVS(AParams *PARAMS);
+int runVS(Params *params);
 
 #endif

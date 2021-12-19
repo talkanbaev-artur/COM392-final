@@ -14,7 +14,7 @@ OUT = -o $@
 all: preps $(BDIR)/interface.o $(BDIR)/gpuCode.o $(BDIR)/animate.o $(BDIR)/hostCode.o
 	$(CC) -o bin/myTemplate bin/interface.o bin/gpuCode.o bin/hostCode.o bin/animate.o $(FLAGS) $(ANIMLIBS) $(YAML_F)
 
-$(BDIR)/interface.o: src/interface.cpp src/interface.h src/params.h src/animate.h src/animate.cu
+$(BDIR)/interface.o: src/interface.cpp src/hostCode.h
 	$(CC) -w -c src/interface.cpp $(FLAGS) $(OUT) 
 
 $(BDIR)/hostCode.o: src/hostCode.cpp src/hostCode.h src/params.h

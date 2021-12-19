@@ -1,12 +1,19 @@
-#ifndef hParamsLib
-#define hParamsLib
+#ifndef SIMULATION_PARAMS
+#define SIMULATION_PARAMS
 
-class AParams
+class Params
 {
+private:
+	int height, width;
+	long populationSize;
+
 public:
-	long sizePopulation;
-	int height;
-	int width;
+	~Params(){};
+	Params(int height, int width) : height(height), width(width),
+									populationSize(height * width){};
+	int getWidth() { return width; }
+	int getHeight() { return height; }
+	long getPopSize() { return populationSize; }
 };
 
 #endif

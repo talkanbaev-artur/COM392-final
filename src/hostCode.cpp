@@ -6,19 +6,19 @@
 #include "hostCode.h"
 #include "animate.h"
 
-int runVS(AParams *PARAMS)
+int runVS(Params *params)
 {
 
 	GPU_Palette P1 = initPopulation();
 
-	CPUAnimBitmap animation(PARAMS->width, PARAMS->height, &P1);
+	CPUAnimBitmap animation(params->getWidth(), params->getHeight(), &P1);
 	cudaMalloc((void **)&animation.dev_bitmap, animation.image_size());
 	animation.initAnimation();
 
-	float *suscMap = (float *)malloc(PARAMS->sizePopulation * sizeof(float));
-	int *stageMap = (int *)malloc(PARAMS->sizePopulation * sizeof(int));
-	int *mingMap = (int *)malloc(PARAMS->sizePopulation * sizeof(int));
-	for (long i = 0; i < PARAMS->sizePopulation; i++)
+	float *suscMap = (float *)malloc(params->getPopSize() * sizeof(float));
+	int *stageMap = (int *)malloc(params->getPopSize() * sizeof(int));
+	int *mingMap = (int *)malloc(params->getPopSize() * sizeof(int));
+	for (long i = 0; i < params->getPopSize(); i++)
 	{
 	}
 	// infect some initial people
@@ -33,8 +33,8 @@ int runVS(AParams *PARAMS)
 	// simulation runs for 10 years, updating population once per day:
 	for (int day = 0; day < 3650; day++)
 	{
-		int err = updatePopulation(&P1, PARAMS, day);
-		animation.drawPalette(PARAMS->width, PARAMS->height);
+		int err = updatePopulation(&P1, day);
+		animation.drawPalette(params->getWidth(), params->getHeight());
 		// return number of newly infected and deaths per day
 	}
 

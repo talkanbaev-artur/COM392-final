@@ -95,7 +95,7 @@ GPU_Palette initPopulation(void) // for simulating virus
 
 /******************************************************************************/
 // analogous to updatePalette in runmode 1
-int updatePopulation(GPU_Palette *P, AParams *PARAMS, int day)
+int updatePopulation(GPU_Palette *P, int day)
 {
 
 	// 1) have people mingle, some will come in contact with contageous people
