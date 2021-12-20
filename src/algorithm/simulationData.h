@@ -19,7 +19,7 @@ public:
 
 class SimulationData
 {
-private:
+public:
 	ulong populationSize;
 	dim3 threads;
 	dim3 blocks;
@@ -34,11 +34,11 @@ private:
 	//stores the rgb value for each pixel to display. used only to draw stuff
 	float3 *rgb;
 
-public:
 	SimulationData(Params p);
 	~SimulationData();
 };
 
 __global__ void initialiseCuRand(int population, curandState *curand);
+__global__ void initialisePopulation(int population, Params p, Individual *people, curandState *c);
 
 #endif

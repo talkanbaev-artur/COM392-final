@@ -8,7 +8,7 @@
 //a single individual.
 class Individual
 {
-private:
+public:
 	// *** MAJOR STATS ***
 
 	//Health status is used to determine the status of human
@@ -47,17 +47,10 @@ private:
 	//later it would nice to have an n-char descriptor for the virus variation
 	//and assign the immunity based on this dna(rna) sample
 
-public:
 	//Public method to get status. Mainly used to display the population map.
-	__device__ int getStatus() { return status; }
-	__device__ int getState() { return state; }
-	__device__ int getImmunity() { return immunity; }
-	__device__ double getSuc() { return susceptibility; }
-	__device__ int getAge() { return age; }
-	__device__ tnd_value getDailyContacts() { return daily_contacts; }
 
 	//GPU constructor. Requires the pointer to a rand generator - not to a multiple generators!
-	__device__ Individual(Params *p, curandState *rand);
+	__device__ Individual(Params p, curandState *rand);
 	__device__ ~Individual();
 };
 

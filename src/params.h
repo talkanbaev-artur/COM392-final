@@ -1,16 +1,18 @@
 #ifndef SIMULATION_PARAMS
 #define SIMULATION_PARAMS
 
+#include "cuda_runtime.h"
+#include "cuda.h"
+
 class Params
 {
-private:
+public:
 	int height, width;
 	long populationSize;
 
-public:
 	double virusEnvSupport;
 	double virusNtr;
-	~Params(){};
+	__host__ __device__ ~Params() {}
 	Params(int height, int width) : height(height), width(width),
 									populationSize(height * width){};
 	int getWidth() { return width; }
