@@ -2,6 +2,8 @@
 #include <stdio.h>
 DailyRuntimeData::DailyRuntimeData(/* args */)
 {
+	s = i = r = 0;
+	gV = 0;
 }
 
 DailyRuntimeData::~DailyRuntimeData()

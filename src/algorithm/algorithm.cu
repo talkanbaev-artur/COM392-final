@@ -1,20 +1,37 @@
 #include "algorithm.h"
 #include "individual.h"
 #include "virus.h"
+#include "community.h"
 #include "../random.cuh"
 
-void runDay(SimulationData sd, int day) {}
+void runDay(SimulationData sd, int day)
+{
+	DailyRuntimeData *dd_g;
+	DailyRuntimeData dd = DailyRuntimeData();
 
-__global__ void runAlgorithms(SimulationData sd) {}
+	cudaMalloc((void **)&dd_g, sizeof(DailyRuntimeData));
 
-__device__ void update_statuses(Individual *population, Virus *virus, curandState *rand)
+	runAlgorithms<<<sd.blocks, sd.threads>>>(sd, dd_g);
+
+	cudaMemcpy(&dd, dd_g, sizeof(DailyRuntimeData), cD2H);
+}
+
+__global__ void runAlgorithms(SimulationData sd, DailyRuntimeData *drd)
+{
+	update_statuses(sd.population, sd.virus, sd.community, sd.rand);
+}
+
+__device__ void update_statuses(Individual *population, Virus *virus, Community *community, curandState *rand)
 {
 	int x = threadIdx.x + (blockIdx.x * blockDim.x);
 	int y = threadIdx.y + (blockIdx.y * blockDim.y);
 	int tid = x + (y * blockDim.x * gridDim.x);
 
 	Individual individual = population[tid];
+	Community i_community = community[blockIdx.y * blockDim.y + blockIdx.x];
 	curandState lcu = rand[tid];
+	float individual_v;
+
 	switch (individual.status)
 	{
 	case -1: // dead
@@ -56,6 +73,8 @@ __device__ void update_statuses(Individual *population, Virus *virus, curandStat
 	}
 
 	rand[tid] = lcu;
+	population[tid] = individual;
+	community[blockIdx.y * blockDim.y + blockIdx.x] = i_community;
 }
 
 __device__ void infect() {}
