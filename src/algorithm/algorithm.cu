@@ -18,27 +18,32 @@ void runDay(SimulationData sd, int day)
 
 __global__ void runAlgorithms(SimulationData sd, DailyRuntimeData *drd)
 {
-	update_statuses(sd.population, sd.virus, sd.community, sd.rand);
+	update_statuses(sd.population, sd.virus, sd.communities, sd.rand);
 }
 
-__device__ void update_statuses(Individual *population, Virus *virus, Community *community, curandState *rand)
+__device__ void update_statuses(Individual *population, Virus *virus, Community *communities, curandState *rand)
 {
 	int x = threadIdx.x + (blockIdx.x * blockDim.x);
 	int y = threadIdx.y + (blockIdx.y * blockDim.y);
 	int tid = x + (y * blockDim.x * gridDim.x);
 
 	Individual individual = population[tid];
-	Community i_community = community[blockIdx.y * blockDim.y + blockIdx.x];
+	Community i_community = communities[blockIdx.y * blockDim.y + blockIdx.x];
 	curandState lcu = rand[tid];
+
 	float individual_v;
+	// individual.susceptibility + (individual.age/100) + (community.sdf * individual.daily_contacts) + virus.nrt
 
 	switch (individual.status)
 	{
 	case -1: // dead
+		individual_v = 0;
 		break;
 	case 0: // healthy
+		individual_v = individual.susceptibility + (individual.age/100) + (i_community.sdf * tnormal(&lcu, individual.daily_contacts)) + virus->ntr;
 		break;
 	case 1: // infected
+		individual_v = individual.susceptibility + (individual.age/20) + (i_community.sdf * tnormal(&lcu, individual.daily_contacts)) + virus->ntr;
 		individual.state -= 1;
 		if (individual.state == 0)
 		{
@@ -47,6 +52,7 @@ __device__ void update_statuses(Individual *population, Virus *virus, Community 
 		}
 		break;
 	case 2: // ill
+		individual_v = individual.susceptibility + (individual.age/10) + (i_community.sdf * tnormal(&lcu, individual.daily_contacts)) + virus->ntr;
 		individual.state -= 1;
 		if (individual.state == 0)
 		{
@@ -55,6 +61,7 @@ __device__ void update_statuses(Individual *population, Virus *virus, Community 
 		}
 		break;
 	case 3: // recovering
+		individual_v = individual.susceptibility + (individual.age/50) + (i_community.sdf * tnormal(&lcu, individual.daily_contacts)) + virus->ntr;
 		individual.state -= 1;
 		if (individual.state == 0)
 		{
@@ -64,6 +71,7 @@ __device__ void update_statuses(Individual *population, Virus *virus, Community 
 		break;
 	case 4: // immune
 	case 5:
+		individual_v = (individual.susceptibility/10) + (individual.age/100) + (i_community.sdf * tnormal(&lcu, individual.daily_contacts)) + virus->ntr;
 		individual.state -= 1;
 		if (individual.state == 0)
 			individual.status = 0;
@@ -74,7 +82,7 @@ __device__ void update_statuses(Individual *population, Virus *virus, Community 
 
 	rand[tid] = lcu;
 	population[tid] = individual;
-	community[blockIdx.y * blockDim.y + blockIdx.x] = i_community;
+	communities[blockIdx.y * blockDim.y + blockIdx.x] = i_community;
 }
 
 __device__ void infect() {}
