@@ -8,11 +8,13 @@
 
 class DailyRuntimeData
 {
-private:
+public:
 	//global V value for the simulation
 	double gV;
 
-public:
+	//daily stats
+	int s, i, r;
+
 	DailyRuntimeData(/* args */);
 	~DailyRuntimeData();
 };

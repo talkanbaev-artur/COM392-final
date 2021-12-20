@@ -3,9 +3,22 @@
 #include "virus.h"
 #include "../random.cuh"
 
-void runDay(SimulationData sd, int day) {}
+void runDay(SimulationData sd, int day)
+{
+	DailyRuntimeData *dd_g;
+	DailyRuntimeData dd = DailyRuntimeData();
 
-__global__ void runAlgorithms(SimulationData sd) {}
+	cudaMalloc((void **)&dd_g, sizeof(DailyRuntimeData));
+
+	runAlgorithms<<<sd.blocks, sd.threads>>>(sd, dd_g);
+
+	cudaMemcpy(&dd, dd_g, sizeof(DailyRuntimeData), cD2H);
+}
+
+__global__ void runAlgorithms(SimulationData sd, DailyRuntimeData *drd)
+{
+	update_statuses(sd.population, sd.virus, sd.rand);
+}
 
 __device__ void update_statuses(Individual *population, Virus *virus, curandState *rand)
 {
