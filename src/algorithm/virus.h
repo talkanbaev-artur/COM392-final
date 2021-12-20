@@ -37,9 +37,8 @@ private:
 	double env_factor;
 
 public:
-	Virus(Params p);
-	Virus();
-	~Virus();
+	__device__ Virus(Params p);
+	__device__ ~Virus();
 };
 
 #endif

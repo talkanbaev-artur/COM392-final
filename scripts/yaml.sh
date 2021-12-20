@@ -14,4 +14,6 @@ if (! dpkg -l | grep "libyaml-cpp-dev" > /dev/null); then
         exit
     fi
     echo -1
+else
+    echo $(pkg-config --cflags --libs yaml-cpp)
 fi

@@ -32,7 +32,7 @@ private:
 	double vaccination_h;
 
 	//Is used to determine the avarage number of contacts per day
-	nd_value daily_contacts;
+	tnd_value daily_contacts;
 
 	// *** IMMUNITY ***
 
@@ -49,9 +49,16 @@ private:
 
 public:
 	//Public method to get status. Mainly used to display the population map.
-	int getStatus() { return status; }
-	Individual(Params p);
-	~Individual();
+	__device__ int getStatus() { return status; }
+	__device__ int getState() { return state; }
+	__device__ int getImmunity() { return immunity; }
+	__device__ double getSuc() { return susceptibility; }
+	__device__ int getAge() { return age; }
+	__device__ tnd_value getDailyContacts() { return daily_contacts; }
+
+	//GPU constructor. Requires the pointer to a rand generator - not to a multiple generators!
+	__device__ Individual(Params *p, curandState *rand);
+	__device__ ~Individual();
 };
 
 #endif

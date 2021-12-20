@@ -8,6 +8,8 @@ private:
 	long populationSize;
 
 public:
+	double virusEnvSupport;
+	double virusNtr;
 	~Params(){};
 	Params(int height, int width) : height(height), width(width),
 									populationSize(height * width){};
