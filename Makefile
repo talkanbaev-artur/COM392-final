@@ -14,7 +14,7 @@ OUT = -o $@
 .SILENT: dirs clean
 
 all: preps $(ALGO_FILES) $(BDIR)/interface.o $(BDIR)/gpuCode.o $(BDIR)/animate.o $(BDIR)/hostCode.o $(BDIR)/random.o
-	g++ -o bin/vs bin/*.o $(FLAGS) $(ANIMLIBS) $(YAML_F)
+	g++ -o bin/vs bin/*.o bin/algorithm/*.o $(FLAGS) $(ANIMLIBS) $(YAML_F)
 
 $(BDIR)/interface.o: src/interface.cpp src/hostCode.h
 	$(CDC) -w -c src/interface.cpp $(OUT) $(YAML_F)

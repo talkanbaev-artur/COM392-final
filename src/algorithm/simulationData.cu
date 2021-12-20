@@ -10,6 +10,7 @@ DailyRuntimeData::~DailyRuntimeData()
 
 SimulationData::SimulationData(Params p)
 {
+	printf("Starting simulation data intialisation process...\n");
 	this->populationSize = p.getPopSize();
 
 	//we use the default 32x32 thread block size which gives max 1024 tpb.
@@ -56,6 +57,8 @@ SimulationData::SimulationData(Params p)
 	}
 
 	initialiseCuRand<<<blocks, threads>>>(this->populationSize, this->rand);
+
+	printf("Simulation data successfully initialised\n");
 }
 
 __global__ void initialiseCuRand(int population, curandState *curand)
