@@ -12,6 +12,32 @@ Virus simulation project.
 
 Roles were assigned on the need basis, and the task are drawn from the Github project.
 
+### Setting up yaml dependencies
+
+1. Clone repo
+
+    ```
+    git clone https://github.com/jbeder/yaml-cpp.git
+    ```
+
+2. Build from sources
+
+    ```
+    cd yaml-cpp
+    mkdir build
+    cd build
+    cmake ..
+    make
+    ```
+
+3. Copy the output to local dir
+
+    ```
+    mkdir -p ~/libs
+    cp cp libyaml-cpp.a ~/libs/
+    cp -r ../include/ ~/libs/
+    ```
+
 ## Outline
 
 The project consists of several main components, forming a hetorogenous computational system.
