@@ -56,8 +56,15 @@ SimulationData::SimulationData(Params p)
 		exit(EXIT_FAILURE);
 	}
 
-	initialiseCuRand<<<blocks, threads>>>(this->populationSize, this->rand);
+	int *res, res2;
+	cudaMalloc((void **)&res, sizeof(int));
 
+	initialiseCuRand<<<blocks, threads>>>(this->populationSize, this->rand);
+	initialisePopulation<<<blocks, threads>>>(populationSize, p, population, rand);
+	initVirus<<<1, 1>>>(p, virus);
+	initCommunities<<<blocks, 1>>>(blocks.x * blocks.y, communities);
+
+	cudaMemcpy(&res2, res, sizeof(int), cD2H);
 	printf("Simulation data successfully initialised\n");
 }
 
@@ -68,7 +75,37 @@ __global__ void initialiseCuRand(int population, curandState *curand)
 	int tid = x + (y * blockDim.x * gridDim.x);
 
 	if (tid < population)
-		curand_init(tid, 0, 0, &curand[tid]);
+	{
+		curand_init(1, tid, 0, &curand[tid]);
+	}
+}
+
+__global__ void initialisePopulation(int population, Params p, Individual *people, curandState *c)
+{
+	int x = threadIdx.x + (blockIdx.x * blockDim.x);
+	int y = threadIdx.y + (blockIdx.y * blockDim.y);
+	int tid = x + (y * blockDim.x * gridDim.x);
+
+	if (tid < population)
+	{
+		Individual i(p, &c[tid]);
+		people[tid] = i;
+	}
+}
+
+__global__ void initVirus(Params p, Virus *v)
+{
+	Virus vl(p);
+	*v = vl;
+}
+__global__ void initCommunities(int comNum, Community *c)
+{
+	int bid = blockIdx.y * blockDim.y + blockIdx.x;
+	if (bid < comNum)
+	{
+		Community c_l;
+		c[bid] = c_l;
+	}
 }
 
 SimulationData::~SimulationData()
@@ -78,4 +115,5 @@ SimulationData::~SimulationData()
 	cudaFree(this->population);
 	cudaFree(this->communities);
 	cudaFree(this->virus);
+	printf("Successfully finished simulation data lifecycle\n");
 }

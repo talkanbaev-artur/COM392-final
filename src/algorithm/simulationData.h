@@ -40,5 +40,7 @@ public:
 
 __global__ void initialiseCuRand(int population, curandState *curand);
 __global__ void initialisePopulation(int population, Params p, Individual *people, curandState *c);
+__global__ void initVirus(Params p, Virus *v);
+__global__ void initCommunities(int comNum, Community *c);
 
 #endif
