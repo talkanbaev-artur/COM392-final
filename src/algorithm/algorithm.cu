@@ -10,6 +10,7 @@ void runDay(SimulationData sd, int day)
 	DailyRuntimeData dd = DailyRuntimeData();
 
 	cudaMalloc((void **)&dd_g, sizeof(DailyRuntimeData));
+<<<<<<< HEAD
 
 	runAlgorithms<<<sd.blocks, sd.threads>>>(sd, dd_g);
 
@@ -19,6 +20,17 @@ void runDay(SimulationData sd, int day)
 __global__ void runAlgorithms(SimulationData sd, DailyRuntimeData *drd)
 {
 	update_statuses(sd.population, sd.virus, sd.community, sd.rand);
+=======
+
+	runAlgorithms<<<sd.blocks, sd.threads>>>(sd, dd_g);
+
+	cudaMemcpy(&dd, dd_g, sizeof(DailyRuntimeData), cD2H);
+}
+
+__global__ void runAlgorithms(SimulationData sd, DailyRuntimeData *drd)
+{
+	update_statuses(sd.population, sd.virus, sd.rand);
+>>>>>>> e6a0e2a084b0f49145a5903436d8810ab1f8c8c1
 }
 
 __device__ void update_statuses(Individual *population, Virus *virus, Community *community, curandState *rand)
