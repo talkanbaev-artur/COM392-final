@@ -86,3 +86,49 @@ __device__ void update_statuses(Individual *population, Virus *virus, Community 
 }
 
 __device__ void infect() {}
+
+__device__ void drawStage(Individual *population, float3 *rgb, ulong sizePopulation) {
+	int x = threadIdx.x + (blockIdx.x * blockDim.x);
+	int y = threadIdx.y + (blockIdx.y * blockDim.y);
+	int tid = x + (y * blockDim.x * gridDim.x);
+
+	Individual individual = population[tid];
+	float3 lrgb = rgb;
+	if (tid < sizePopulation){
+		if (individual.status == 0) {  // if not infected, draw as white
+			lrgb[tid].x = 1.0;
+			lrgb[tid].y = 1.0;
+			lrgb[tid].z = 1.0;
+		}
+		else if (individual.status == -1) {  // if dead, draw in black
+			lrgb[tid].x = 0.0;
+			lrgb[tid].y = 0.0;
+			lrgb[tid].z = 0.0;
+		}
+		else if (individual.status < 1) { // if in infected stage, draw as red
+			lrgb[tid].x = 1.0;
+			lrgb[tid].y = 0.0;
+			lrgb[tid].z = 0.0;
+		}
+		else if (individual.status < 2) { // if in ill, draw as green
+			lrgb[tid].x = 0.0;
+			lrgb[tid].y = 1.0;
+			lrgb[tid].z = 0.0;
+		}
+		else if (individual.status < 3) { // if in recovering, draw as blue
+			lrgb[tid].x = 0.0;
+			lrgb[tid].y = 0.0;
+			lrgb[tid].z = 1.0;
+		}
+		else if (individual.status < 4) { // if in immune, draw as violet
+			lrgb[tid].x = 0.7;
+			lrgb[tid].y = 0.0;
+			lrgb[tid].z = 1.0;
+		}
+		else if (individual.status < 5) { // if in vaccinated, draw as pink
+			lrgb[tid].x = 1.0;
+			lrgb[tid].y = 0.7;
+			lrgb[tid].z = 0.8;
+		}
+	}
+}
