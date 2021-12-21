@@ -9,10 +9,10 @@
 class DailyRuntimeData
 {
 public:
-	//global V value for the simulation
+	// global V value for the simulation
 	double gV;
 
-	//daily stats
+	// daily stats
 	int s, i, r;
 
 	DailyRuntimeData(/* args */);
@@ -26,14 +26,14 @@ public:
 	dim3 threads;
 	dim3 blocks;
 
-	//Following data is allocated on GPU
+	// Following data is allocated on GPU
 
 	Individual *population;
 	curandState *rand;
 	Virus *virus;
 	Community *communities;
 
-	//stores the rgb value for each pixel to display. used only to draw stuff
+	// stores the rgb value for each pixel to display. used only to draw stuff
 	float3 *rgb;
 
 	SimulationData(Params p);

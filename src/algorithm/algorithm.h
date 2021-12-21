@@ -7,7 +7,7 @@
 void runDay(SimulationData *sd, int day);
 
 // First stage of daily progress. Updates individuals statuses, calculates V
-__device__ void update_statuses(Individual *population, Virus *virus, Community *c, curandState *rand);
+__device__ void update_statuses(SimulationData *sd, double *cv);
 
 // Second stage of daily progress. Infects people from V
 __device__ void infect(Individual *pop, curandState *rand);
