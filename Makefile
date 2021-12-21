@@ -1,5 +1,6 @@
 CC= g++
 CDC= $(shell ./scripts/find_cuda.sh) --std c++14 -dc
+FINAL_CDC = $(shell ./scripts/find_cuda.sh) --std c++14
 SDIR= src
 BDIR= bin
 FLAGS=  -L/usr/local/cuda/lib64 -I/usr/local/cuda-10.1/targets/x86_64-linux/include -lcuda -lcudart
@@ -14,7 +15,7 @@ OUT = -o $@
 .SILENT: dirs clean
 
 all: preps $(ALGO_FILES) $(BDIR)/interface.o $(BDIR)/gpuCode.o $(BDIR)/animate.o $(BDIR)/hostCode.o $(BDIR)/random.o
-	nvcc -o bin/vs bin/*.o bin/algorithm/*.o $(FLAGS) $(ANIMLIBS) $(YAML_F)
+	$(FINAL_CDC) -o bin/vs bin/*.o bin/algorithm/*.o $(FLAGS) $(ANIMLIBS) $(YAML_F)
 
 $(BDIR)/interface.o: src/interface.cpp src/hostCode.h
 	$(CDC) -w -c src/interface.cpp $(OUT) $(YAML_F)
