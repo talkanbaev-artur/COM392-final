@@ -6,6 +6,7 @@
 #include <GL/glx.h>
 
 #include "gpuCode.h"
+#include "algorithm/algorithm.h"
 
 struct CPUAnimBitmap
 {
@@ -14,10 +15,10 @@ struct CPUAnimBitmap
 	void (*clickDrag)(void *, int, int, int, int);
 	int dragStartX, dragStartY;
 
-	GPU_Palette *thePalette;
+	SimulationData *sd;
 	unsigned char *dev_bitmap;
 
-	CPUAnimBitmap(int w, int h, GPU_Palette *d);
+	CPUAnimBitmap(int w, int h, SimulationData *sd);
 
 	~CPUAnimBitmap();
 
