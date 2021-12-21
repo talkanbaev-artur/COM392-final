@@ -58,6 +58,20 @@ SimulationData::SimulationData(Params p)
 		exit(EXIT_FAILURE);
 	}
 
+	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+	cudaMallocArray(&cuArray, &channelDesc, blocks.x, blocks.y, cudaArraySurfaceLoadStore);
+
+	memset(&resDesc, 0, sizeof(cudaResourceDesc));
+	resDesc.resType = cudaResourceTypeArray;
+	resDesc.res.array.array = cuArray;
+
+	err = cudaCreateSurfaceObject(&tex, &resDesc);
+	if (err != cudaSuccess)
+	{
+		printf("Error allocating surface memory %s\n", cudaGetErrorString(err));
+		exit(1);
+	}
+
 	int *res, res2;
 	cudaMalloc((void **)&res, sizeof(int));
 
@@ -112,6 +126,8 @@ __global__ void initCommunities(int comNum, Community *c)
 
 SimulationData::~SimulationData()
 {
+	cudaDestroySurfaceObject(tex);
+	cudaFreeArray(cuArray);
 	cudaFree(this->rgb);
 	cudaFree(this->rand);
 	cudaFree(this->population);

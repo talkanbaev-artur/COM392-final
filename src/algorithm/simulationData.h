@@ -36,6 +36,10 @@ public:
 	// stores the rgb value for each pixel to display. used only to draw stuff
 	float3 *rgb;
 
+	cudaSurfaceObject_t tex;
+	cudaArray *cuArray;
+	struct cudaResourceDesc resDesc;
+
 	SimulationData(Params p);
 	~SimulationData();
 };

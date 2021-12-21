@@ -3,7 +3,6 @@
 #include "virus.h"
 #include "community.h"
 #include "../random.cuh"
-
 #include <stdio.h>
 
 __device__ void reduce(double *bl)
@@ -43,6 +42,10 @@ __global__ void runAlgorithms(SimulationData *sd, DailyRuntimeData *drd, int day
 
 	update_statuses(sd, commV);
 	reduce(commV);
+	if (threadIdx.x == 0 && threadIdx.y == 0)
+	{
+		surf2Dwrite((float)commV[0], sd->tex, blockIdx.x * 4, blockIdx.y, cudaBoundaryModeZero);
+	}
 	infect(sd, drd, commV, day);
 	drawStage(sd->population, sd->rgb, sd->populationSize);
 }
@@ -123,11 +126,23 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 	sd->communities[bid] = i_community;
 }
 
+__device__ float getNeighbours(SimulationData *sd)
+{
+	float4 neighs;
+	neighs.w = surf2Dread<float>(sd->tex, (blockIdx.x - 1) * 4, blockIdx.y, cudaBoundaryModeZero);
+	neighs.x = surf2Dread<float>(sd->tex, (blockIdx.x + 1) * 4, blockIdx.y, cudaBoundaryModeZero);
+	neighs.y = surf2Dread<float>(sd->tex, blockIdx.x * 4, blockIdx.y - 1, cudaBoundaryModeZero);
+	neighs.z = surf2Dread<float>(sd->tex, blockIdx.x * 4, blockIdx.y + 1, cudaBoundaryModeZero);
+
+	return neighs.w + neighs.x + neighs.y + neighs.z;
+}
+
 __device__ void infect(SimulationData *sd, DailyRuntimeData *drd, double *lv, int day)
 {
 	int x = threadIdx.x + (blockIdx.x * blockDim.x);
 	int y = threadIdx.y + (blockIdx.y * blockDim.y);
 	int tid = x + (y * blockDim.x * gridDim.x);
+	int bid = blockIdx.x + blockIdx.y * gridDim.x;
 
 	Individual in = sd->population[tid];
 	curandState lcu = sd->rand[tid];
@@ -144,11 +159,12 @@ __device__ void infect(SimulationData *sd, DailyRuntimeData *drd, double *lv, in
 		sd->rand[tid] = lcu;
 		return;
 	}
-	Community i_community = sd->communities[tid];
+	Community i_community = sd->communities[bid];
 	// people at age of 18 are least vulnerable. and the age multiplier grows non-lineraly
 	// 7.7 for 6yo, same for 30yo. At the age of 50 it is 52. 192.7 for 80yo
 	double age_m = (0.05 * pow(in.age - 18, 2) + 0.5);
 	double v_effect = lv[0] / 100;
+	v_effect += getNeighbours(sd) / 4000;
 	double chance = abs(normal(&lcu, {0.5, 0.2}));
 	double daily_a = -0.0005 * pow(in.age - 28, 2) + 1;
 	// chance *= daily_a * (i_community.sdf * tnormal(&lcu, in.daily_contacts));
@@ -160,6 +176,7 @@ __device__ void infect(SimulationData *sd, DailyRuntimeData *drd, double *lv, in
 		in.state = tnormal(&lcu, sd->virus->incubation_period);
 	}
 
+	sd->communities[bid] = i_community;
 	sd->population[tid] = in;
 	sd->rand[tid] = lcu;
 }
