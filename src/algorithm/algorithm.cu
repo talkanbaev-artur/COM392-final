@@ -31,20 +31,20 @@ void runDay(SimulationData *sd, int day)
 	cudaMalloc((void **)&dd_g, sizeof(DailyRuntimeData));
 	cudaMemcpy(dd_g, &dd, sizeof(DailyRuntimeData), cH2D);
 
-	runAlgorithms<<<sd->blocks, sd->threads>>>(gsd, dd_g);
+	runAlgorithms<<<sd->blocks, sd->threads>>>(gsd, dd_g, day);
 
 	cudaMemcpy(&dd, dd_g, sizeof(DailyRuntimeData), cD2H);
 	cudaMemcpy(sd, gsd, sizeof(SimulationData), cD2H);
 }
 
-__global__ void runAlgorithms(SimulationData *sd, DailyRuntimeData *drd)
+__global__ void runAlgorithms(SimulationData *sd, DailyRuntimeData *drd, int day)
 {
 	__shared__ double commV[1024]; // block size
 
 	update_statuses(sd, commV);
 	reduce(commV);
 
-	infect(sd->population, sd->rand);
+	infect(sd, commV, day);
 	drawStage(sd->population, sd->rgb, sd->populationSize);
 }
 
@@ -124,27 +124,45 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 	sd->communities[bid] = i_community;
 }
 
-__device__ void infect(Individual *pop, curandState *rand)
+__device__ void infect(SimulationData *sd, double *lv, int day)
 {
 	int x = threadIdx.x + (blockIdx.x * blockDim.x);
 	int y = threadIdx.y + (blockIdx.y * blockDim.y);
 	int tid = x + (y * blockDim.x * gridDim.x);
 
-	Individual in = pop[tid];
-	curandState loc = rand[tid];
+	Individual in = sd->population[tid];
+	curandState lcu = sd->rand[tid];
 
+	if (day == 0)
+	{
+		double chance = abs(normal(&lcu, {0.5, 0.2})) - 0.05;
+		if (chance > 1.0 - sd->virus->env_factor)
+		{
+			in.status = 1;
+			in.state = tnormal(&lcu, sd->virus->incubation_period);
+		}
+		sd->population[tid] = in;
+		sd->rand[tid] = lcu;
+		return;
+	}
+	Community i_community = sd->communities[tid];
 	// people at age of 18 are least vulnerable. and the age multiplier grows non-lineraly
 	// 7.7 for 6yo, same for 30yo. At the age of 50 it is 52. 192.7 for 80yo
 	double age_m = (0.05 * pow(in.age - 18, 2) + 0.5);
+	double v_effect = lv[0] / 100;
+	double chance = abs(normal(&lcu, {0.5, 0.2}));
+	double daily_a = -0.0005 * pow(in.age - 28, 2) + 1;
+	// chance *= daily_a * (i_community.sdf * tnormal(&lcu, in.daily_contacts));
+	chance = chance * age_m * v_effect * (1 / in.susceptibility) * daily_a * sd->virus->ntr;
 
-	double chance = curand_normal_double(&loc);
-	if (chance > 0.9 && in.status != 4)
+	if (chance > 5 && in.status == 0)
 	{
 		in.status = 1;
-		in.state = 3;
+		in.state = tnormal(&lcu, sd->virus->incubation_period);
 	}
-	pop[tid] = in;
-	rand[tid] = loc;
+
+	sd->population[tid] = in;
+	sd->rand[tid] = lcu;
 }
 
 __device__ void drawStage(Individual *population, float3 *rgb, ulong sizePopulation)

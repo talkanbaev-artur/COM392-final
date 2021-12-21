@@ -10,10 +10,10 @@ void runDay(SimulationData *sd, int day);
 __device__ void update_statuses(SimulationData *sd, double *cv);
 
 // Second stage of daily progress. Infects people from V
-__device__ void infect(Individual *pop, curandState *rand);
+__device__ void infect(SimulationData *sd, double *lv, int day);
 
 // main algorithm function. It prepares individuals for each day, and runs both stages
-__global__ void runAlgorithms(SimulationData *sd, DailyRuntimeData *drd);
+__global__ void runAlgorithms(SimulationData *sd, DailyRuntimeData *drd, int day);
 
 __device__ void drawStage(Individual *population, float3 *rgb, ulong sizePopulation);
 #endif
