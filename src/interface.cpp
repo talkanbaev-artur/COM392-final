@@ -12,6 +12,8 @@ int main(int argc, char *argv[])
 	std::cout << "version: " << version << "\n";
 
 	Params params(1024, 1024);
+	params.virusNtr = config["ntr"].as<double>();
+	params.virusEnvSupport = config["v_env"].as<double>();
 
 	printf("\n -- running virus simulator --\n");
 
