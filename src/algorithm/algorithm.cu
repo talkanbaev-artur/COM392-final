@@ -85,6 +85,12 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 	case 2: // ill
 		// x0.5 because the person is ill and expiriences symptoms reduced number of contacts
 		individual_v = 0.5 * daily_a * (i_community.sdf * tnormal(&lcu, {3, 5, 0, 20})) * virus.ntr;
+		double age_m = (0.02 * pow(individual.age - 18, 2) + 0.5);
+		if (1 / individual.susceptibility * (individual.state * 1.0 / 2) * abs(curand_log_normal_double(&lcu, 0.01, 0.4) - 1) * age_m > 30)
+		{
+			individual.status = -1;
+			break;
+		}
 		individual.state -= 1;
 		if (individual.state == 0)
 		{
