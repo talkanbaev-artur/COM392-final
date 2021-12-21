@@ -43,8 +43,7 @@ __global__ void runAlgorithms(SimulationData *sd, DailyRuntimeData *drd, int day
 
 	update_statuses(sd, commV);
 	reduce(commV);
-
-	infect(sd, commV, day);
+	infect(sd, drd, commV, day);
 	drawStage(sd->population, sd->rgb, sd->populationSize);
 }
 
@@ -124,7 +123,7 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 	sd->communities[bid] = i_community;
 }
 
-__device__ void infect(SimulationData *sd, double *lv, int day)
+__device__ void infect(SimulationData *sd, DailyRuntimeData *drd, double *lv, int day)
 {
 	int x = threadIdx.x + (blockIdx.x * blockDim.x);
 	int y = threadIdx.y + (blockIdx.y * blockDim.y);
