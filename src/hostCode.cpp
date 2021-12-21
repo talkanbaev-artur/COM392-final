@@ -1,8 +1,5 @@
+#include <unistd.h>
 #include <stdio.h>
-#include <cstdlib>
-#include <math.h>
-#include <thread>
-
 #include "hostCode.h"
 #include "animate.h"
 #include "algorithm/algorithm.h"
@@ -22,6 +19,8 @@ int runVS(Params *params)
 	{
 		runDay(&sd, day);
 		animation.drawPalette(params->getWidth(), params->getHeight());
+		// sleep(0);
+		printf("Day #%d\n", day);
 		// return number of newly infected and deaths per day
 	}
 }
