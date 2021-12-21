@@ -15,11 +15,11 @@ SimulationData::SimulationData(Params p)
 	printf("Starting simulation data intialisation process...\n");
 	this->populationSize = p.getPopSize();
 
-	//we use the default 32x32 thread block size which gives max 1024 tpb.
-	//it would be usefull to use 30x32 to fit this pattern into full hd samples
+	// we use the default 32x32 thread block size which gives max 1024 tpb.
+	// it would be usefull to use 30x32 to fit this pattern into full hd samples
 	this->threads.x = 32;
 	this->threads.y = 32;
-	//round up the number of blocks to fit all data
+	// round up the number of blocks to fit all data
 	this->blocks.x = (p.getWidth() + 31) / 32;
 	this->blocks.y = (p.getHeight() + 31) / 32;
 
@@ -78,7 +78,7 @@ __global__ void initialiseCuRand(int population, curandState *curand)
 
 	if (tid < population)
 	{
-		curand_init(1, tid, 0, &curand[tid]);
+		curand_init(tid, 0, 0, &curand[tid]);
 	}
 }
 
