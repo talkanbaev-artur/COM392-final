@@ -67,6 +67,39 @@ __global__ void drawColor(unsigned char *optr,
 }
 
 /******************************************************************************/
+__global__ void drawColor(unsigned char *optr, float3 *rgb)
+{
+	// map from threadIdx/BlockIdx to pixel position
+	int x = threadIdx.x + blockIdx.x * blockDim.x;
+	int y = threadIdx.y + blockIdx.y * blockDim.y;
+	int offset = x + y * blockDim.x * gridDim.x;
+
+	float3 lcl = rgb[offset];
+	//  theRed = (theRed / 50.0) + 0.5;
+	if (lcl.x < 0)
+		lcl.x = 0;
+	if (lcl.x > 1)
+		lcl.x = 1;
+
+	//  theGreen = (theGreen / 50.0) + 0.5;
+	if (lcl.y < 0)
+		lcl.y = 0;
+	if (lcl.y > 1)
+		lcl.y = 1;
+
+	//  theBlue = (theBlue / 50.0) + 0.5;
+	if (lcl.z < 0)
+		lcl.z = 0;
+	if (lcl.z > 1)
+		lcl.z = 1;
+
+	optr[offset * 4 + 0] = 255 * lcl.x; // red
+	optr[offset * 4 + 1] = 255 * lcl.y; // green
+	optr[offset * 4 + 2] = 255 * lcl.z; // blue
+	optr[offset * 4 + 3] = 255;			// alpha (opacity)
+}
+
+/******************************************************************************/
 void CPUAnimBitmap::drawPalette(int width, int height)
 { // 32, SIZE/32
 
@@ -76,10 +109,7 @@ void CPUAnimBitmap::drawPalette(int width, int height)
 	dim3 blocks(height / TPB, width / TPB);
 
 	//  drawGray <<< blocks, threads >>> (dev_bitmap, thePalette->gray);
-	drawColor<<<blocks, threads>>>(dev_bitmap,
-								   thePalette->red,
-								   thePalette->green,
-								   thePalette->blue);
+	drawColor<<<blocks, threads>>>(dev_bitmap, sd->rgb);
 
 	// copy bitmap from device to host to draw frame:
 	cudaMemcpy(get_ptr(), dev_bitmap, image_size(), cudaMemcpyDeviceToHost);
@@ -88,13 +118,14 @@ void CPUAnimBitmap::drawPalette(int width, int height)
 }
 
 /******************************************************************************/
-CPUAnimBitmap::CPUAnimBitmap(int w, int h, GPU_Palette *d)
+CPUAnimBitmap::CPUAnimBitmap(int w, int h, SimulationData *d)
 { //void* d) {
 	width = w;
 	height = h;
 	pixels = new unsigned char[width * height * 4];
+	memset(pixels, 255, width * height * 4);
 	//  dataBlock = d;
-	thePalette = d;
+	sd = d;
 	//clickDrag = NULL;
 }
 
@@ -130,7 +161,7 @@ void CPUAnimBitmap::mouse_func(int button, int state, int mx, int my)
 		}
 		else if (state == GLUT_UP)
 		{
-			bitmap->clickDrag(bitmap->thePalette,
+			bitmap->clickDrag(bitmap->sd,
 							  bitmap->dragStartX,
 							  bitmap->dragStartY,
 							  mx, my);
@@ -162,8 +193,6 @@ void CPUAnimBitmap::initAnimation()
 	glutCreateWindow("Virus simulation");
 	// glutKeyboardFunc(Key);
 	glutDisplayFunc(Draw);
-	if (clickDrag != NULL)
-		glutMouseFunc(mouse_func);
 }
 
 /******************************************************************************/

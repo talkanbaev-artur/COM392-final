@@ -2,6 +2,8 @@
 #include <stdio.h>
 DailyRuntimeData::DailyRuntimeData(/* args */)
 {
+	s = i = r = 0;
+	gV = 0;
 }
 
 DailyRuntimeData::~DailyRuntimeData()
@@ -10,13 +12,14 @@ DailyRuntimeData::~DailyRuntimeData()
 
 SimulationData::SimulationData(Params p)
 {
+	printf("Starting simulation data intialisation process...\n");
 	this->populationSize = p.getPopSize();
 
-	//we use the default 32x32 thread block size which gives max 1024 tpb.
-	//it would be usefull to use 30x32 to fit this pattern into full hd samples
+	// we use the default 32x32 thread block size which gives max 1024 tpb.
+	// it would be usefull to use 30x32 to fit this pattern into full hd samples
 	this->threads.x = 32;
 	this->threads.y = 32;
-	//round up the number of blocks to fit all data
+	// round up the number of blocks to fit all data
 	this->blocks.x = (p.getWidth() + 31) / 32;
 	this->blocks.y = (p.getHeight() + 31) / 32;
 
@@ -55,7 +58,30 @@ SimulationData::SimulationData(Params p)
 		exit(EXIT_FAILURE);
 	}
 
+	cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
+	cudaMallocArray(&cuArray, &channelDesc, blocks.x, blocks.y, cudaArraySurfaceLoadStore);
+
+	memset(&resDesc, 0, sizeof(cudaResourceDesc));
+	resDesc.resType = cudaResourceTypeArray;
+	resDesc.res.array.array = cuArray;
+
+	err = cudaCreateSurfaceObject(&tex, &resDesc);
+	if (err != cudaSuccess)
+	{
+		printf("Error allocating surface memory %s\n", cudaGetErrorString(err));
+		exit(1);
+	}
+
+	int *res, res2;
+	cudaMalloc((void **)&res, sizeof(int));
+
 	initialiseCuRand<<<blocks, threads>>>(this->populationSize, this->rand);
+	initialisePopulation<<<blocks, threads>>>(populationSize, p, population, rand);
+	initVirus<<<1, 1>>>(p, virus);
+	initCommunities<<<blocks, 1>>>(blocks.x * blocks.y, communities);
+
+	cudaMemcpy(&res2, res, sizeof(int), cD2H);
+	printf("Simulation data successfully initialised\n");
 }
 
 __global__ void initialiseCuRand(int population, curandState *curand)
@@ -65,14 +91,47 @@ __global__ void initialiseCuRand(int population, curandState *curand)
 	int tid = x + (y * blockDim.x * gridDim.x);
 
 	if (tid < population)
+	{
 		curand_init(tid, 0, 0, &curand[tid]);
+	}
+}
+
+__global__ void initialisePopulation(int population, Params p, Individual *people, curandState *c)
+{
+	int x = threadIdx.x + (blockIdx.x * blockDim.x);
+	int y = threadIdx.y + (blockIdx.y * blockDim.y);
+	int tid = x + (y * blockDim.x * gridDim.x);
+
+	if (tid < population)
+	{
+		Individual i(p, &c[tid]);
+		people[tid] = i;
+	}
+}
+
+__global__ void initVirus(Params p, Virus *v)
+{
+	Virus vl(p);
+	*v = vl;
+}
+__global__ void initCommunities(int comNum, Community *c)
+{
+	int bid = blockIdx.y * blockDim.y + blockIdx.x;
+	if (bid < comNum)
+	{
+		Community c_l;
+		c[bid] = c_l;
+	}
 }
 
 SimulationData::~SimulationData()
 {
+	cudaDestroySurfaceObject(tex);
+	cudaFreeArray(cuArray);
 	cudaFree(this->rgb);
 	cudaFree(this->rand);
 	cudaFree(this->population);
 	cudaFree(this->communities);
 	cudaFree(this->virus);
+	printf("Successfully finished simulation data lifecycle\n");
 }

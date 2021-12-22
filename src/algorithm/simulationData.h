@@ -8,37 +8,45 @@
 
 class DailyRuntimeData
 {
-private:
-	//global V value for the simulation
+public:
+	// global V value for the simulation
 	double gV;
 
-public:
+	// daily stats
+	int s, i, r;
+
 	DailyRuntimeData(/* args */);
 	~DailyRuntimeData();
 };
 
 class SimulationData
 {
-private:
+public:
 	ulong populationSize;
 	dim3 threads;
 	dim3 blocks;
 
-	//Following data is allocated on GPU
+	// Following data is allocated on GPU
 
 	Individual *population;
 	curandState *rand;
 	Virus *virus;
 	Community *communities;
 
-	//stores the rgb value for each pixel to display. used only to draw stuff
+	// stores the rgb value for each pixel to display. used only to draw stuff
 	float3 *rgb;
 
-public:
+	cudaSurfaceObject_t tex;
+	cudaArray *cuArray;
+	struct cudaResourceDesc resDesc;
+
 	SimulationData(Params p);
 	~SimulationData();
 };
 
 __global__ void initialiseCuRand(int population, curandState *curand);
+__global__ void initialisePopulation(int population, Params p, Individual *people, curandState *c);
+__global__ void initVirus(Params p, Virus *v);
+__global__ void initCommunities(int comNum, Community *c);
 
 #endif

@@ -8,7 +8,7 @@
 //a single individual.
 class Individual
 {
-private:
+public:
 	// *** MAJOR STATS ***
 
 	//Health status is used to determine the status of human
@@ -32,7 +32,7 @@ private:
 	double vaccination_h;
 
 	//Is used to determine the avarage number of contacts per day
-	nd_value daily_contacts;
+	tnd_value daily_contacts;
 
 	// *** IMMUNITY ***
 
@@ -47,11 +47,11 @@ private:
 	//later it would nice to have an n-char descriptor for the virus variation
 	//and assign the immunity based on this dna(rna) sample
 
-public:
 	//Public method to get status. Mainly used to display the population map.
-	int getStatus() { return status; }
-	Individual(Params p);
-	~Individual();
+
+	//GPU constructor. Requires the pointer to a rand generator - not to a multiple generators!
+	__device__ Individual(Params p, curandState *rand);
+	__device__ ~Individual();
 };
 
 #endif

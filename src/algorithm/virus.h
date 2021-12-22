@@ -7,7 +7,7 @@
 //Virus holds the virus data. Usually this instance would be a singleton, which is updated in cpu each day.
 class Virus
 {
-private:
+public:
 	//Case fatality rate describes the general boundaries for deadliness of the virus
 	//note: cfr's actuall value is calculated no more than blocks-times a day. This behaviour may change
 	nd_value cfr;
@@ -36,10 +36,8 @@ private:
 	//If value is not 0, then each day it has affect on ability to infect new people from natural causes (zoonosis)
 	double env_factor;
 
-public:
-	Virus(Params p);
-	Virus();
-	~Virus();
+	__device__ Virus(Params p);
+	__device__ ~Virus();
 };
 
 #endif
