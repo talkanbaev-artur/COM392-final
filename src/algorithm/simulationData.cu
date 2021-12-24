@@ -92,7 +92,7 @@ __global__ void initialiseCuRand(int population, curandState *curand)
 
 	if (tid < population)
 	{
-		curand_init(tid, 0, 0, &curand[tid]);
+		curand_init(tid, 0, 1, &curand[tid]);
 	}
 }
 
@@ -119,7 +119,7 @@ __global__ void initCommunities(int comNum, Community *c)
 	int bid = blockIdx.y * blockDim.y + blockIdx.x;
 	if (bid < comNum)
 	{
-		Community c_l;
+		Community c_l = Community();
 		c[bid] = c_l;
 	}
 }

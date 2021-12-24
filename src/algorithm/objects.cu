@@ -27,7 +27,7 @@ __device__ Virus::Virus(Params p)
 {
 	env_factor = p.virusEnvSupport;
 	ntr = p.virusNtr;
-	incubation_period = {14.0, 1.3, 2.0, 20.0};
+	incubation_period = {14.0, 1.3, 3.0, 20.0};
 	illness_period = {3.0, 1.0, 1.0, 5.0};
 	recovery_period = {2.0, 0.6, 1.0, 3.0};
 	cfr = {0.5, 0.33};
