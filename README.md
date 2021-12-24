@@ -12,7 +12,19 @@ Virus simulation project.
 
 Roles were assigned on the need basis, and the task are drawn from the Github project.
 
-### Setting up yaml dependencies
+## Outline
+
+The project consists of several main components, forming a hetorogenous computational system.
+
+Wrapper component launches the applications, sets default values, prepares the configuration structures, and handles main computational calls. It as well handles the display of statistics.
+
+The core component runs the CUDA kernel to compute the iterations of the simulation on the NVidia GPU card.
+
+### Simulation algorithm
+
+[Docs are here](https://github.com/talkanbaev-artur/COM392-final-back-team/tree/master/docs)
+
+### Setting up yaml dependencies manually
 
 1. Clone repo
 
@@ -37,29 +49,3 @@ Roles were assigned on the need basis, and the task are drawn from the Github pr
     cp cp libyaml-cpp.a ~/libs/
     cp -r ../include/ ~/libs/
     ```
-
-## Outline
-
-The project consists of several main components, forming a hetorogenous computational system.
-
-Wrapper component launches the applications, sets default values, prepares the configuration structures, and handles main computational calls. It as well handles the display of statistics.
-
-The core component runs the CUDA kernel to compute the iterations of the simulation on the NVidia GPU card.
-
-### Simulation algorithm
-
-TBF
-
-### Visualisation
-
-TBF
-
-### Analysis of the results
-
-TBF
-### Comparative analysis of configurations
-
-TBF
-### Conclusion
-
-TBF
