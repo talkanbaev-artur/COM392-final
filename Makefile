@@ -7,7 +7,7 @@ FLAGS=  -L/usr/local/cuda/lib64 -I/usr/local/cuda-10.1/targets/x86_64-linux/incl
 ANIMLIBS= -lglut -lGL
 ALGO_FILES = $(shell ls src/algorithm | grep .cu | sed --expression='s/^/$(BDIR)\/algorithm\//g' | tr '\n' ' ' | sed --expression='s/\.cu/\.o/g')
 #placeholder n - later would be updated
-YAML_F= n
+YAML_F= -Ivendor/include -Lvendor -lyaml-cpp
 
 # -o flag builder
 OUT = -o $@
@@ -39,14 +39,6 @@ $(ALGO_FILES): $(BDIR)/%.o: src/%.cu
 # ---------- PREPARATION STAGE ----------
 
 preps: dirs
-
-#run script to check if needed libraries are here
-setup_yaml: YAML_F =  $(shell ./scripts/yaml.sh && true)
-	YAML_F = $(shell ./scripts/yaml.sh && true)
-
-#dynamic update of YAML_F var
-#update_yaml : YAML_F = $(shell pkg-config --cflags --libs yaml-cpp)
-#	YAML_F = $(shell pkg-config --cflags --libs yaml-cpp)
 
 # create a bin dir for build artifacts
 dirs:
