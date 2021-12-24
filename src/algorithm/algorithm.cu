@@ -67,7 +67,7 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 
 	// social activity modifier for indiv based on age
 	// after 14 and till 42 this modifier > 0.9
-	double daily_a = -0.0005 * pow(individual.age - 28, 2) + 1;
+	double daily_a = -0.0005 * pow(individual.age - 28, 2);
 
 	switch (individual.status)
 	{
@@ -76,9 +76,9 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 	case 0: // healthy
 		break;
 	case 1: // infected
-		individual_v = 1 + daily_a * (i_community.sdf * tnormal(&lcu, individual.daily_contacts)) * virus.ntr;
+		individual_v = ((1.0) * tnormal(&lcu, individual.daily_contacts)) * (virus.ntr + daily_a);
 		individual.state -= 1;
-		if (individual.state >= 0)
+		if (individual.state <= 0)
 		{
 			individual.status++;
 			individual.state = tnormal(&lcu, virus.illness_period);
@@ -86,9 +86,9 @@ __device__ void update_statuses(SimulationData *sd, double *cv)
 		break;
 	case 2: // ill
 		// x0.5 because the person is ill and expiriences symptoms reduced number of contacts
-		individual_v = 0.5 * daily_a * (i_community.sdf * tnormal(&lcu, {3, 5, 0, 20})) * virus.ntr;
+		individual_v = 0.5 * daily_a * ((1.0 / i_community.sdf) * tnormal(&lcu, {3, 5, 0, 20})) * (virus.ntr);
 		double age_m = (0.02 * pow(individual.age - 18, 2) + 0.5);
-		if (1 / individual.susceptibility * (individual.state * 1.0 / 2) * abs(curand_log_normal_double(&lcu, 0.01, 0.4) - 1) * age_m > 30)
+		if ((1.0 / individual.susceptibility) * (individual.state * 1.0 / 3) * abs(curand_log_normal_double(&lcu, 0.01, 0.4) - 1) * age_m > 35)
 		{
 			individual.status = -1;
 			break;
@@ -149,7 +149,7 @@ __device__ void infect(SimulationData *sd, DailyRuntimeData *drd, double *lv, in
 
 	if (day == 0)
 	{
-		double chance = abs(normal(&lcu, {0.5, 0.2})) - 0.05;
+		double chance = curand_uniform_double(&lcu);
 		if (chance > 1.0 - sd->virus->env_factor)
 		{
 			in.status = 1;
@@ -163,12 +163,12 @@ __device__ void infect(SimulationData *sd, DailyRuntimeData *drd, double *lv, in
 	// people at age of 18 are least vulnerable. and the age multiplier grows non-lineraly
 	// 7.7 for 6yo, same for 30yo. At the age of 50 it is 52. 192.7 for 80yo
 	double age_m = (0.05 * pow(in.age - 18, 2) + 0.5);
-	double v_effect = lv[0] / 100;
-	v_effect += getNeighbours(sd) / 4000;
-	double chance = abs(normal(&lcu, {0.5, 0.2}));
-	double daily_a = -0.0005 * pow(in.age - 28, 2) + 1;
+	double v_effect = lv[0] / 200;
+	v_effect += getNeighbours(sd) / 9000;
+	double chance = curand_uniform_double(&lcu);
+	double daily_a = -0.0005 * pow(in.age - 28, 2);
 	// chance *= daily_a * (i_community.sdf * tnormal(&lcu, in.daily_contacts));
-	chance = chance * age_m * v_effect * (1 / in.susceptibility) * daily_a * sd->virus->ntr;
+	chance = chance * age_m * v_effect * (1.0 / in.susceptibility) * (daily_a + sd->virus->ntr);
 
 	if (chance > 5 && in.status == 0)
 	{
